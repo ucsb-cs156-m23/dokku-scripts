@@ -16,6 +16,6 @@ function list_apps {
     # list_apps dokku-01.cs.ucsb.edu 
     host=${1} # e.g. dokku-01.cs.ucsb.edu
     
-    RESULT=`ssh $host dokku apps:list`
+    RESULT=`ssh $host dokku apps:list | grep -v "=====> My Apps"`
     echo $RESULT
 }

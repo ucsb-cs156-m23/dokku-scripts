@@ -30,3 +30,26 @@ function matching_apps {
     echo $RESULT
 
 }
+
+function unlink_and_destroy_db {
+    # Example:
+    # unlink_and_destroy_db dokku-05.cs.ucsb.edu proj-courses-s23-7pm-3
+    host=${1} # e.g. dokku-05.cs.ucsb.edu
+    app=${2} # e.g. proj-courses-s23-7pm-3
+    
+    db=${2}-db 
+
+    ssh $host dokku ps:stop $app
+    ssh $host dokku postgres:unlink ${db} ${app}
+    ssh $host dokku postgres:destroy ${db} --force
+}
+
+function destroy {
+    # Example:
+    # unlink_and_destroy_db dokku-05.cs.ucsb.edu proj-courses-s23-7pm-3
+    host=${1} # e.g. dokku-05.cs.ucsb.edu
+    app=${2} # e.g. proj-courses-s23-7pm-3
+    
+    unlink_and_destroy_db $host $app
+    ssh $host dokku apps:destroy $app --force
+}

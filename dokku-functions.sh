@@ -26,7 +26,7 @@ function matching_apps {
     host=${1} # e.g. dokku-01.cs.ucsb.edu
     regex=${2} # e.g. "^jpa03-.*$"
 
-    RESULT=`ssh $host dokku apps:list | grep -v "=====> My Apps"` | grep $regex
+    RESULT=`ssh $host dokku apps:list | grep -v "=====> My Apps" | grep $regex`
     echo $RESULT
 
 }

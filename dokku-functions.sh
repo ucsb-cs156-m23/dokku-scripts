@@ -64,3 +64,18 @@ function destroy_matching_apps {
         destroy $host $app
     done
 }
+
+function all_dokku_nums {
+    echo "00 01 02 03 04 05 06 07 08 09 10 11 12"
+}
+
+
+function destroy_matching_apps_all_hosts {
+    # Example:
+    # destroy_all_matching_apps "^team02-.*$"
+     regex=${1} # e.g. "^team02-.*$"
+    
+    for d in `all_dokku_nums`; do
+        destroy_matching_apps dokku-${d}.cs.ucsb.edu $regex
+    done
+}

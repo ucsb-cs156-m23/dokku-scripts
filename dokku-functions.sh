@@ -53,3 +53,14 @@ function destroy {
     unlink_and_destroy_db $host $app
     ssh $host dokku apps:destroy $app --force
 }
+
+function destroy_matching_apps {
+    # Example:
+    # destroy_matching_apps dokku-01.cs.ucsb.edu "^jpa03-.*$"
+    host=${1} # e.g. dokku-05.cs.ucsb.edu
+    regex=${2} # e.g. "^proj-courses-s23-.*$"
+    
+    for app in $(matching_apps $host $regex); do
+        destroy $host $app
+    done
+}

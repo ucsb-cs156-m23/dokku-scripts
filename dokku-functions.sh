@@ -66,8 +66,7 @@ function destroy_matching_apps {
 }
 
 function all_dokku_nums {
-    # Note: leaving out 12 for now
-    echo "00 01 02 03 04 05 06 07 08 09 10 11"
+    echo "00 01 02 03 04 05 06 07 08 09 10 11 12"
 }
 
 

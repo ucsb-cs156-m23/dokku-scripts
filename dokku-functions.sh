@@ -87,7 +87,15 @@ function matching_apps_all_hosts {
     
     ALL_HOSTS=""
     for d in `all_dokku_nums`; do
-        echo $d
         ALL_HOSTS="${ALL_HOSTS} "`matching_apps dokku-${d}.cs.ucsb.edu $regex`
+    done
+    echo ${ALL_HOSTS}
+}
+
+function all_hosts_do {
+    # Example:
+    # all_hosts_do dokku apps:list
+    for d in `all_dokku_nums`; do
+        ssh dokku-${d}.cs.ucsb.edu $@
     done
 }

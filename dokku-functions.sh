@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+source .env.SAMPLE # so that at least everything has a default value and the script doesn't fail
+source .env        # so that things will have a correct value
+
 function git_sync {
     # Example:
     # git_sync dokku-01.cs.ucsb.edu proj-gauchoride-qa https://github.com/ucsb-cs156-s23/proj-gauchoride-s23-5pm-1 xy-new-feature

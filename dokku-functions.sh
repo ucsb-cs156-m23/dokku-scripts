@@ -105,7 +105,7 @@ function https_all {
   for i in ${all} ; do 
     host=`url_to_host $i`
     app=`url_to_app $i`
-    echo "Setting up https for ${url}..."
+    echo "Setting up https for ${i}..."
     ssh $host dokku "letsencrypt:set $app email phtcon@ucsb.edu;  dokku letsencrypt:enable $app"
   done
 }
@@ -115,7 +115,7 @@ function db_all {
   for i in ${all} ; do 
     host=`url_to_host $i`
     app=`url_to_app $i`
-    echo "Setting up db for ${url}..."
+    echo "Setting up db for ${i}..."
     ssh $host dokku postgres:create ${app}-db
     ssh $host dokku postgres:link ${app}-db ${app}
     RESULT=`ssh $host dokku config:show ${app} | egrep "^DATABASE_URL"`

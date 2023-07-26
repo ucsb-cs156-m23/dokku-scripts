@@ -32,13 +32,5 @@ function https_all_happycows {
    https_all `happycows_urls`
 }
 
-function https_all {
-  all=$@
-  for i in ${all} ; do 
-    host=`url_to_host $i`
-    app=`url_to_app $i`
-    echo "Setting up https for ${url}..."
-    ssh $host dokku "letsencrypt:set $app email phtcon@ucsb.edu;  dokku letsencrypt:enable $app"
-  done
-}
+
 

@@ -32,5 +32,14 @@ function https_all_happycows {
    https_all `happycows_urls`
 }
 
+function db_all_happycows {
+   db_all `happycows_urls`
+}
+
+function google_oauth_all_happycows {
+   google_oauth_all `happycows_urls`
+}
+
+
 
 

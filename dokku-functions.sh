@@ -136,3 +136,20 @@ function db_all {
   done
 }
 
+function google_oauth_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Setting up google oauth for ${url}..."
+
+    GOOGLE_CLIENT_ID=$APP_URL_TO_CLIENT_ID[$url]
+    GOOGLE_CLIENT_SECRET=$APP_URL_TO_CLIENT_SECRET[$url]
+
+    ssh $host " \
+      dokku config:set --no-restart ${app} GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
+      dokku config:set --no-restart ${app} GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
+      dokku config:show ${app} \
+    "
+  done
+}

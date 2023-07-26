@@ -99,3 +99,37 @@ function all_hosts_do {
         ssh dokku-${d}.cs.ucsb.edu $@
     done
 }
+
+function https_all {
+  all=$@
+  for i in ${all} ; do 
+    host=`url_to_host $i`
+    app=`url_to_app $i`
+    echo "Setting up https for ${url}..."
+    ssh $host dokku "letsencrypt:set $app email phtcon@ucsb.edu;  dokku letsencrypt:enable $app"
+  done
+}
+
+function db_all {
+  all=$@
+  for i in ${all} ; do 
+    host=`url_to_host $i`
+    app=`url_to_app $i`
+    echo "Setting up db for ${url}..."
+    ssh $host dokku postgres:create ${app}-db
+    ssh $host dokku postgres:link ${app}-db ${app}
+    RESULT=`ssh $host dokku config:show ${1} | egrep "^DATABASE_URL"`
+    PASSWORD=`echo "$RESULT" |  awk -F[:@] '{print $4}'`
+    DATABASE=`echo "$RESULT" |  awk -F[/] '{print $4}'`
+
+    IP=`dokku postgres:info ${1}-db | grep "Internal ip:"`
+    IP=`echo ${IP/Internal ip: /} | tr -d '[:space:]'`
+    URL="jdbc:postgresql://${IP}:5432/${DATABASE}"
+    ssh $host "dokku config:set --no-restart ${app} JDBC_DATABASE_URL=${URL} ; \
+               dokku config:set --no-restart ${app} JDBC_DATABASE_USERNAME=postgres ; \
+               dokku config:set --no-restart ${app} JDBC_DATABASE_PASSWORD=${PASSWORD} ; \
+               dokku config:set --no-restart ${app} PRODUCTION=true "
+    ssh $host dokku config:show ${app}
+  done
+}
+

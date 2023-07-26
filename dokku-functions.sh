@@ -141,15 +141,40 @@ function google_oauth_all {
   for url in ${all} ; do 
     host=`url_to_host $url`
     app=`url_to_app $url`
-    echo "Setting up google oauth for ${url}..."
+    echo "Setting up google oauth for ${url}... host=${host} app=${app}"
 
-    GOOGLE_CLIENT_ID=$APP_URL_TO_CLIENT_ID[$url]
-    GOOGLE_CLIENT_SECRET=$APP_URL_TO_CLIENT_SECRET[$url]
+    GOOGLE_CLIENT_ID=${APP_URL_TO_CLIENT_ID[$url]}
+    GOOGLE_CLIENT_SECRET=${APP_URL_TO_CLIENT_SECRET[$url]}
 
     ssh $host " \
-      dokku config:set --no-restart ${app} GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
-      dokku config:set --no-restart ${app} GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
+      dokku config:set --no-restart ${app} GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} ;\
+      dokku config:set --no-restart ${app} GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} ;\
       dokku config:show ${app} \
     "
+  done
+}
+
+function git_sync_main_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Performing git sync on main branch for ${url}... host=${host} app=${app}"
+
+    GITHUB_URL=${APP_URL_TO_GITHUB_URL[$url]}
+    echo "GITHUB_URL=$GITHUB_URL"
+
+    ssh $host dokku git:sync ${app} ${GITHUB_URL} main
+      
+  done
+}
+
+function ps_rebuild_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Performing ps:rebuild for ${url}... host=${host} app=${app}"
+    ssh $host dokku ps:rebuild ${app} 
   done
 }

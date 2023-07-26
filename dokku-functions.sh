@@ -118,11 +118,11 @@ function db_all {
     echo "Setting up db for ${url}..."
     ssh $host dokku postgres:create ${app}-db
     ssh $host dokku postgres:link ${app}-db ${app}
-    RESULT=`ssh $host dokku config:show ${1} | egrep "^DATABASE_URL"`
+    RESULT=`ssh $host dokku config:show ${app} | egrep "^DATABASE_URL"`
     PASSWORD=`echo "$RESULT" |  awk -F[:@] '{print $4}'`
     DATABASE=`echo "$RESULT" |  awk -F[/] '{print $4}'`
 
-    IP=`dokku postgres:info ${1}-db | grep "Internal ip:"`
+    IP=`dokku postgres:info ${app}-db | grep "Internal ip:"`
     IP=`echo ${IP/Internal ip: /} | tr -d '[:space:]'`
     URL="jdbc:postgresql://${IP}:5432/${DATABASE}"
     ssh $host "dokku config:set --no-restart ${app} JDBC_DATABASE_URL=${URL} ; \

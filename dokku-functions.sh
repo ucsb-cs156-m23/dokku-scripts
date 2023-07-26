@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source .env.SAMPLE # so that at least everything has a default value and the script doesn't fail
+source SAMPLE.env # so that at least everything has a default value and the script doesn't fail
 source .env        # so that things will have a correct value
 
 function git_sync {

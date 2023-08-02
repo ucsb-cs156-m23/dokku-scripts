@@ -103,6 +103,32 @@ function all_hosts_do {
     done
 }
 
+
+function url_to_host {
+  url=${1}
+  # remove all chars up to first . from arg, that should be the host
+  host=`echo $url  | sed 's/[^\.]*\.//'`
+  echo $host
+} 
+
+function url_to_app {
+ url=${1}
+ # remove all chars after first ., then all chars up to //
+ host=`echo $url  | sed 's/\..*//' | sed 's/.*\/\///'`
+ echo $host
+
+}
+
+function apps_create_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Creating dokku app for ${url}..."
+    ssh $host "dokku apps:create $app; dokku config:set --no-restart $app PRODUCTION=true"
+  done
+}
+
 function https_all {
   all=$@
   for i in ${all} ; do 
@@ -122,6 +148,9 @@ function db_all {
     ssh $host dokku postgres:create ${app}-db
     ssh $host dokku postgres:link ${app}-db ${app}
     RESULT=`ssh $host dokku config:show ${app} | egrep "^DATABASE_URL"`
+    if [ "$RESULT" == "" ]; then
+        RESULT=`ssh $host dokku config:show ${app} | egrep "^DOKKU_POSTGRES_.*_URL"`
+    fi
     PASSWORD=`echo "$RESULT" |  awk -F[:@] '{print $4}'`
     DATABASE=`echo "$RESULT" |  awk -F[/] '{print $4}'`
 
@@ -154,6 +183,16 @@ function google_oauth_all {
   done
 }
 
+function admin_emails_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Setting up admin_emails for ${url}... host=${host} app=${app}"
+    ssh $host dokku config:set --no-restart ${app} ADMIN_EMAILS=${APP_URL_TO_ADMIN_EMAILS[$url]}
+  done
+}
+
 function git_sync_main_all {
   all=$@
   for url in ${all} ; do 
@@ -177,4 +216,25 @@ function ps_rebuild_all {
     echo "Performing ps:rebuild for ${url}... host=${host} app=${app}"
     ssh $host dokku ps:rebuild ${app} 
   done
+}
+
+
+
+function full_app_create_all {
+   all=$@
+   echo "full_app_create_all underway for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+   apps_create_all $all
+   https_all $all
+   db_all $all
+   google_oauth_all $all
+   admin_emails_all $all
+   git_sync_main $all
+   ps_rebuild_all $all
+   echo "full_app_create_all done for:"
+   for url in $all; do 
+     echo "  $url"
+   done
 }

@@ -13,20 +13,6 @@ function happycows_urls {
     https://happycows-qa.dokku-00.cs.ucsb.edu 
 }
 
-function url_to_host {
-  url=${1}
-  # remove all chars up to first . from arg, that should be the host
-  host=`echo $url  | sed 's/[^\.]*\.//'`
-  echo $host
-} 
-
-function url_to_app {
- url=${1}
- # remove all chars after first ., then all chars up to //
- host=`echo $url  | sed 's/\..*//' | sed 's/.*\/\///'`
- echo $host
-
-}
 
 function https_all_happycows {
    https_all `happycows_urls`
@@ -40,6 +26,16 @@ function google_oauth_all_happycows {
    google_oauth_all `happycows_urls`
 }
 
+function git_sync_main_all_happycows {
+   git_sync_main_all `happycows_urls`
+}
 
+function ps_rebuild_all_happycows {
+   ps_rebuild_all `happycows_urls`
+}
+
+function admin_emails_all_happycows {
+   admin_emails_all `happycows_urls`
+}
 
 

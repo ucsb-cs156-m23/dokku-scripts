@@ -231,7 +231,7 @@ function full_app_create_all {
    db_all $all
    google_oauth_all $all
    admin_emails_all $all
-   git_sync_main $all
+   git_sync_main_all $all
    ps_rebuild_all $all
    echo "full_app_create_all done for:"
    for url in $all; do 

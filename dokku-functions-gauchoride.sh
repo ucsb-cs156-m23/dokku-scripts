@@ -5,10 +5,12 @@ source .env
 
 function gauchoride_urls {
   echo \
-    https://proj-gauchoride-s23-5pm-1.dokku-12.cs.ucsb.edu \
-    https://proj-gauchoride-s23-5pm-2.dokku-12.cs.ucsb.edu \
-    https://proj-gauchoride-s23-5pm-3.dokku-12.cs.ucsb.edu \
-    https://proj-gauchoride-s23-5pm-4.dokku-12.cs.ucsb.edu \
+    https://gauchoride.dokku-01.cs.ucsb.edu \
+    https://gauchoride.dokku-02.cs.ucsb.edu \
+    https://gauchoride.dokku-03.cs.ucsb.edu \
+    https://gauchoride-qa.dokku-01.cs.ucsb.edu \
+    https://gauchoride-qa.dokku-02.cs.ucsb.edu \
+    https://gauchoride-qa.dokku-03.cs.ucsb.edu \
     https://gauchoride.dokku-00.cs.ucsb.edu \
     https://gauchoride-qa.dokku-00.cs.ucsb.edu 
 }
@@ -52,4 +54,8 @@ function admin_emails_all_gauchoride {
    admin_emails_all `gauchoride_urls`
 }
 
+
+function full_app_create_all_gauchoride {
+  full_app_create_all `gauchoride_urls`
+}
 

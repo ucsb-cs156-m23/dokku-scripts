@@ -5,14 +5,15 @@ source .env
 
 function happycows_urls {
   echo \
-    https://proj-happycows-s23-6pm-1.dokku-12.cs.ucsb.edu \
-    https://proj-happycows-s23-6pm-2.dokku-12.cs.ucsb.edu \
-    https://proj-happycows-s23-6pm-3.dokku-12.cs.ucsb.edu \
-    https://proj-happycows-s23-6pm-4.dokku-12.cs.ucsb.edu \
-    https://happycows.dokku-00.cs.ucsb.edu \
-    https://happycows-qa.dokku-00.cs.ucsb.edu 
+    https://happycows.dokku-01.cs.ucsb.edu \
+    https://happycows.dokku-02.cs.ucsb.edu \
+    https://happycows.dokku-03.cs.ucsb.edu \
+    https://happycows.dokku-04.cs.ucsb.edu \
+    https://happycows-qa.dokku-01.cs.ucsb.edu \
+    https://happycows-qa.dokku-02.cs.ucsb.edu \
+    https://happycows-qa.dokku-03.cs.ucsb.edu \
+    https://happycows-qa.dokku-04.cs.ucsb.edu 
 }
-
 
 function https_all_happycows {
    https_all `happycows_urls`
@@ -37,5 +38,4 @@ function ps_rebuild_all_happycows {
 function admin_emails_all_happycows {
    admin_emails_all `happycows_urls`
 }
-
 

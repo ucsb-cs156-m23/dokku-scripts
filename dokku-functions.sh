@@ -154,13 +154,46 @@ function db_all {
     PASSWORD=`echo "$RESULT" |  awk -F[:@] '{print $4}'`
     DATABASE=`echo "$RESULT" |  awk -F[/] '{print $4}'`
 
-    IP=`dokku postgres:info ${app}-db | grep "Internal ip:"`
+    IP=`ssh $host "dokku postgres:info ${app}-db" | grep "Internal ip:"`
     IP=`echo ${IP/Internal ip: /} | tr -d '[:space:]'`
     URL="jdbc:postgresql://${IP}:5432/${DATABASE}"
     ssh $host "dokku config:set --no-restart ${app} JDBC_DATABASE_URL=${URL} ; \
                dokku config:set --no-restart ${app} JDBC_DATABASE_USERNAME=postgres ; \
                dokku config:set --no-restart ${app} JDBC_DATABASE_PASSWORD=${PASSWORD} ; \
                dokku config:set --no-restart ${app} PRODUCTION=true "
+    ssh $host dokku config:show ${app}
+  done
+}
+
+
+
+
+function OLD_mongodb_all {
+  all=$@
+  for i in ${all} ; do 
+    host=`url_to_host $i`
+    app=`url_to_app $i`
+    echo "Setting up mongodb for ${i}..."
+    ssh $host dokku mongo:create ${app}-mongodb
+    ssh $host dokku mongo:link ${app}-mongodb ${app}
+    RESULT=`ssh $host dokku config:show ${app} | egrep "^MONGO_URL"`
+    RESULT=${RESULT/MONGO_URL: /}
+    IP=`ssh $host dokku mongo:info ${app}-mongodb | grep "Internal ip:"`
+    IP=`echo ${IP/Internal ip: /} | tr -d '[:space:]'`
+    HOST="dokku-mongo-${app}-mongodb"
+    URL=${RESULT/${HOST}/${IP}}
+    ssh $host "dokku config:set --no-restart ${app} MONGODB_URI=\"${URL}\"" 
+    ssh $host dokku config:show ${app}
+  done
+}
+
+function mongodb_all {
+  all=$@
+  for i in ${all} ; do 
+    host=`url_to_host $i`
+    app=`url_to_app $i`
+    echo "Setting up mongodb for ${i}..."
+    ssh $host "dokku config:set --no-restart ${app} MONGODB_URI=\"${APP_URL_TO_MONGO_URI[$i]}\""
     ssh $host dokku config:show ${app}
   done
 }
@@ -189,7 +222,28 @@ function admin_emails_all {
     host=`url_to_host $url`
     app=`url_to_app $url`
     echo "Setting up admin_emails for ${url}... host=${host} app=${app}"
-    ssh $host dokku config:set --no-restart ${app} ADMIN_EMAILS=${APP_URL_TO_ADMIN_EMAILS[$url]}
+    ssh $host dokku config:set --no-restart ${app} APP_ADMIN_EMAILS=${APP_URL_TO_ADMIN_EMAILS[$url]}
+  done
+}
+
+function github_logins_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Setting up github logins for ${url}... host=${host} app=${app}"
+    ssh $host dokku config:set --no-restart ${app} ADMIN_GITHUB_LOGINS=${APP_URL_TO_GITHUB_LOGINS[$url]}
+  done
+}
+
+
+function ucsb_api_key_all {
+  all=$@
+  for url in ${all} ; do 
+    host=`url_to_host $url`
+    app=`url_to_app $url`
+    echo "Setting up UCSB_API_KEY for ${url}... host=${host} app=${app}"
+    ssh $host dokku config:set --no-restart ${app} UCSB_API_KEY=${APP_URL_TO_UCSB_API_KEY[$url]}
   done
 }
 
@@ -219,7 +273,6 @@ function ps_rebuild_all {
 }
 
 
-
 function full_app_create_all {
    all=$@
    echo "full_app_create_all underway for:"
@@ -234,6 +287,61 @@ function full_app_create_all {
    git_sync_main_all $all
    ps_rebuild_all $all
    echo "full_app_create_all done for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+}
+
+function full_app_create_all_github_logins {
+   all=$@
+   echo "full_app_create_all_github_logins underway for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+   apps_create_all $all
+   https_all $all
+   db_all $all
+   google_oauth_all $all
+   github_logins_all $all
+   git_sync_main_all $all
+   ps_rebuild_all $all
+   echo "full_app_create_all_github_logins done for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+}
+
+
+function full_app_create_with_mongo_and_ucsb_api_key_all {
+   all=$@
+   echo "full_app_create_all underway for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+   apps_create_all $all
+   https_all $all
+   db_all $all
+   mongodb_all $all
+   ucsb_api_key_all $all
+   google_oauth_all $all
+   admin_emails_all $all
+   git_sync_main_all $all
+   ps_rebuild_all $all
+   echo "full_app_create_all done for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+}
+
+function git_sync_main_ps_build_all {
+   all=$@
+   echo "git_sync_main_ps_build_all underway for:"
+   for url in $all; do 
+     echo "  $url"
+   done
+   git_sync_main_all $all
+   ps_rebuild_all $all
+   echo "git_sync_main_ps_build_all done for:"
    for url in $all; do 
      echo "  $url"
    done

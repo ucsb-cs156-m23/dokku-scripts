@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
 source dokku-functions.sh
-source .env
+
 
 function courses_urls {
   echo \
-    https://courses-qa.dokku-09.cs.ucsb.edu \
-    https://courses-qa.dokku-10.cs.ucsb.edu \
-    https://courses-qa.dokku-11.cs.ucsb.edu \
-    https://courses-qa.dokku-12.cs.ucsb.edu 
+    https://courses-qa.dokku-01.cs.ucsb.edu \
+    https://courses-qa.dokku-02.cs.ucsb.edu \
+    https://courses-qa.dokku-03.cs.ucsb.edu \
+    https://courses-qa.dokku-04.cs.ucsb.edu \
+    https://courses.dokku-01.cs.ucsb.edu \
+    https://courses.dokku-02.cs.ucsb.edu \
+    https://courses.dokku-03.cs.ucsb.edu \
+    https://courses.dokku-04.cs.ucsb.edu 
 }
 
 function url_to_host {
@@ -52,5 +56,5 @@ function admin_emails_all_courses {
 
 
 function full_app_create_all_courses {
-  full_app_create_with_mongo_all `courses_urls`
+ full_app_create_with_mongo_and_ucsb_api_key_all `courses_urls`
 }

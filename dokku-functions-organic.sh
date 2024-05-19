@@ -5,14 +5,14 @@ source .env
 
 function organic_urls {
   echo \
-    https://organic.dokku-05.cs.ucsb.edu \
-    https://organic.dokku-06.cs.ucsb.edu \
-    https://organic.dokku-07.cs.ucsb.edu \
-    https://organic.dokku-08.cs.ucsb.edu \
-    https://organic-qa.dokku-05.cs.ucsb.edu \
-    https://organic-qa.dokku-06.cs.ucsb.edu \
-    https://organic-qa.dokku-07.cs.ucsb.edu \
-    https://organic-qa.dokku-08.cs.ucsb.edu 
+    https://organic.dokku-09.cs.ucsb.edu \
+    https://organic.dokku-10.cs.ucsb.edu \
+    https://organic.dokku-11.cs.ucsb.edu \
+    https://organic.dokku-12.cs.ucsb.edu \
+    https://organic-qa.dokku-09.cs.ucsb.edu \
+    https://organic-qa.dokku-10.cs.ucsb.edu \
+    https://organic-qa.dokku-11.cs.ucsb.edu \
+    https://organic-qa.dokku-12.cs.ucsb.edu 
 }
 
 function https_all_organic {
@@ -39,3 +39,6 @@ function github_logins_all_organic {
    github_logins_all `organic_urls`
 }
 
+function full_app_create_all_organic {
+ full_app_create_all_github_logins `organic_urls`
+}
